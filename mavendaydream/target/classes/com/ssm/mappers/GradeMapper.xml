@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.dao.GradeDao">
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        BEGIN
+        <foreach collection="list" item="grade" index="index" separator="">
+            insert into grade values(seq_grade_id.nextval,#{grade.review_id},#{grade.student_id},#{grade.grade_score});
+        </foreach>
+        END;
+    </insert>
+    <select id="FindGradesByReviewId" resultType="com.ssm.pojo.Grade">
+        select * from grade where review_id=#{review_id}
+    </select>
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.dao.PowerDao">
+    <select id="getPowers" resultType="com.ssm.pojo.Power" parameterType="java.lang.Integer">
+        select p.* from power p,models m where role_id=#{role_id} and p.model_id=m.model_id and m.model_status='1'
+    </select>
+    <delete id="deletepower" parameterType="java.lang.Integer">
+        delete from power where role_id=#{role_id}
+    </delete>
+    <insert id="addPower" parameterType="com.ssm.pojo.AddPower">
+        insert into power values (seq_power.nextval,#{role_id},#{model_id})
+    </insert>
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.dao.ModelsDao">
+    <select id="getModelsByid" resultType="com.ssm.pojo.Models" parameterType="java.lang.Integer">
+        select * from models where model_id=#{model_id} and model_status='1'
+    </select>
+    <select id="getModelsByName" resultType="com.ssm.pojo.Models" parameterType="java.lang.String">
+        select * from models where model_name=#{model_name} and model_status='1'
+    </select>
+    <select id="getModelsByfidStatus" resultType="com.ssm.pojo.Models" parameterType="java.lang.Integer">
+        select * from models where fid=#{fid} and model_status='1'
+    </select>
+    <select id="getModelsByfid" resultType="com.ssm.pojo.Models" parameterType="java.lang.Integer">
+        select * from models where fid=#{fid}
+    </select>
+    <select id="getParentModels" resultType="com.ssm.pojo.Models">
+        select * from models where model_type='1'
+    </select>
+    <select id="getParentModelsStatus" resultType="com.ssm.pojo.Models">
+      select * from models where model_type='1' and model_status='1'
+    </select>
+    <update id="updateModelStatus" parameterType="com.ssm.pojo.ModelUpdate">
+        update models set model_status=#{model_status} where model_id=#{model_id}
+    </update>
+    <update id="updateModel" parameterType="com.ssm.pojo.Models">
+        update models set model_name=#{model_name},url=#{url} where model_id=#{model_id}
+    </update>
+    <insert id="insertParentModel" parameterType="com.ssm.pojo.Models">
+        insert into models(model_id,model_name,model_type,fid,model_status) values (seq_model.nextval,#{model_name},'1',0,'1')
+    </insert>
+    <insert id="insertChildModel" parameterType="com.ssm.pojo.Models">
+        insert into models values (seq_model.nextval,#{model_name},'2',#{fid},'1',#{url})
+    </insert>
+</mapper>

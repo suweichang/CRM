@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.dao.ActivityDao">
+
+    <!--配置结果映射,id是这个结果映射的名字, type是实体类的别名或全路径-->
+    <resultMap id="classMapper" type="com.ssm.pojo.Classs">
+        <id property="class_id" column="class_id"/>
+        <result property="class_name" column="class_name"/>
+        <result property="teacher_id" column="teacher_id"/>
+    </resultMap>
+    <resultMap id="teacherMapper" type="com.ssm.pojo.Teacher">
+        <id property="teacher_id" column="teacher_id"/>
+        <result property="teacher_name" column="teacher_name"/>
+        <result property="teacher_status" column="teacher_status"/>
+    </resultMap>
+    <resultMap id="activityMapper" type="com.ssm.pojo.Activity">
+        <id property="activity_id" column="activity_id"/>
+        <result property="activity_name" column="activity_name"/>
+        <result property="activity_loc" column="activity_loc"/>
+        <result property="activity_time" column="activity_time"/>
+
+        <association property="classs" resultMap="classMapper"/>
+
+        <association property="teacher" resultMap="teacherMapper"/>
+
+    </resultMap>
+    <select id="GetAllActivity" resultMap="activityMapper" parameterType="int">
+        select activity_id,class_name,activity_name,activity_loc,activity_time,teacher_name from (
+        select rownum ro,activity_id,c.class_name,activity_name,a.activity_loc,a.activity_time,t.teacher_name
+        from activity a,classs c,teacher t where a.class_id=c.class_id and t.teacher_id=a.teacher_id) s
+        where s.ro between #{index} and #{index}+9
+    </select>
+    <select id="pagecount" resultType="int">
+      select count(*) from activity
+    </select>
+
+    <insert id="AddActivity" parameterType="com.ssm.pojo.Classs">
+        insert into activity values(seq_activity_id.nextval,#{class_id},#{activity_name},#{activity_loc},sysdate,#{teacher_id})
+    </insert>
+</mapper>

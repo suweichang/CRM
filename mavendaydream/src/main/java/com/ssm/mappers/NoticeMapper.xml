@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.dao.NoticeDao">
+
+    <select id="GetAllNotices" resultType="com.ssm.pojo.Notice">
+        select * from notice where 1=1
+        <if test="notice_title!= null and notice_title!=''" >
+            and notice_title like #{notice_title}
+        </if>
+        <if test="notice_content!= null and notice_content!=''" >
+            and notice_content like #{notice_content}
+        </if>
+    </select>
+
+    <select id="GetAllNoticeById" resultType="com.ssm.pojo.Notice">
+        select * from notice where notice_id=#{notice_id}
+    </select>
+
+    <insert id="AddNotice" parameterType="com.ssm.pojo.Notice">
+        insert into notice values(SEQ_NOTICE_ID.nextval,#{notice_title},#{notice_content},#{user_id},sysdate)
+    </insert>
+
+    <update id="UpDAteNotice" parameterType="com.ssm.pojo.Notice">
+        update notice set notice_title=#{notice_title},notice_content=#{notice_content} where notice_id=#{notice_id}
+    </update>
+
+    <delete id="DelNoticeById">
+        delete notice where notice_id=#{notice_id}
+    </delete>
+</mapper>

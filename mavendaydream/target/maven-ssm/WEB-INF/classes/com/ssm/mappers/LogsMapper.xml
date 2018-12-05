@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.dao.LogsDao">
+    <insert id="addLogs" parameterType="com.ssm.pojo.Logs">
+        insert into logs values(seq_log.nextval,#{user_id},#{operation},#{operation_time},#{ip_address})
+    </insert>
+    <resultMap id="UserResult" type="com.ssm.pojo.Useres">
+        <id property="user_id" column="user_id"/>
+        <result property="user_name" column="user_name"/>
+    </resultMap>
+    <resultMap id="LogsResult" type="com.ssm.pojo.Logs">
+        <id property="log_id" column="log_id"/>
+        <result property="user_id" column="user_id"/>
+        <result property="operation" column="operation"/>
+        <result property="operation_time" column="operation_time"/>
+        <result property="ip_address" column="ip_address"/>
+        <association property="useres" resultMap="UserResult"/>
+    </resultMap>
+    <select resultMap="LogsResult" id="getAllLogs">
+        select l.*,u.user_name from logs l,useres u  where l.user_id=u.user_id order by operation_time desc
+    </select>
+</mapper>

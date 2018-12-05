@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.dao.UseresDao">
+    <select id="useresLogin" resultType="com.ssm.pojo.Useres" parameterType="java.lang.String">
+        select * from useres where user_name=#{username} and user_status='1'
+    </select>
+    <resultMap id="roleMapper" type="com.ssm.pojo.Rolees">
+        <id column="role_id" property="role_id"/>
+        <result column="role_name" property="role_name"/>
+        <result column="role_status" property="role_status"/>
+    </resultMap>
+
+    <resultMap id="userMapper" type="com.ssm.pojo.Useres">
+        <id column="user_id" property="user_id"/>
+        <result column="user_name" property="user_name"/>
+        <result column="user_pwd" property="user_pwd"/>
+        <result column="role_id" property="role_id"/>
+        <result column="user_status" property="user_status"/>
+        <association property="rolees" resultMap="roleMapper"/>
+    </resultMap>
+
+
+    <select id="getAllUser" resultMap="userMapper" parameterType="java.lang.Integer">
+        select u.*,r.role_name
+        from useres u,rolees r
+        where 1=1 and u.role_id=r.role_id
+        <if test="user_id != 0">
+            and u.user_id=#{user_id}
+        </if>
+        order by u.user_id
+    </select>
+
+    <update id="updateUser" parameterType="com.ssm.pojo.Useres">
+        update useres set user_status=#{user_status}
+        where user_id=#{user_id}
+    </update>
+
+    <update id="updateUsers" parameterType="com.ssm.pojo.Useres">
+        update useres set user_pwd=#{user_pwd},role_id=#{role_id}
+        where user_id=#{user_id}
+    </update>
+</mapper>

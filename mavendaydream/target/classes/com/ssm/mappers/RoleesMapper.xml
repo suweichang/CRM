@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssm.dao.RoleesDao">
+    <select id="getAllRoles" resultType="com.ssm.pojo.Rolees" >
+        select * from rolees where role_status='1'
+    </select>
+    <select id="getAllRoless" resultType="com.ssm.pojo.Rolees" >
+        select * from rolees
+    </select>
+    <update id="updateRoleStatus" parameterType="com.ssm.pojo.RoleUpdate">
+        update rolees set role_status=#{status} where role_id=#{role_id}
+    </update>
+
+    <select id="getPowerByRoleid" resultType="com.ssm.pojo.Power" parameterType="java.lang.Integer">
+        select * from power where role_id=#{role_id}
+    </select>
+    <select id="getRoleesByid" resultType="com.ssm.pojo.Rolees" parameterType="java.lang.Integer">
+        select * from rolees where role_id=#{role_id}
+    </select>
+    <update id="updateRoleName">
+        update rolees set role_name=#{role_name} where role_id=#{role_id}
+    </update>
+    <insert id="addRole" parameterType="java.lang.String">
+        insert into rolees values(seq_role.nextval,#{role_name},'1')
+    </insert>
+    <select id="getRoleesByName" resultType="com.ssm.pojo.Rolees" parameterType="java.lang.String">
+        select * from rolees where role_name=#{role_name}
+    </select>
+</mapper>

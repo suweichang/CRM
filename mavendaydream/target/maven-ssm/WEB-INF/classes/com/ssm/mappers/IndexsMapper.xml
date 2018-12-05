@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssm.dao.IndexsDao">
+
+    <!--<resultMap id="noticeMapper" type="com.ssm.pojo.Notice">
+        <id column="notice_id" property="notice_id"/>
+        <result column="notice_title" property="notice_title"/>
+        <result column="notice_content" property="notice_content"/>
+        <result column="notice_time" property="notice_time"/>
+    </resultMap>-->
+
+    <select id="getNotice" resultType="com.ssm.pojo.Notice" parameterType="java.lang.Integer">
+        select * from
+        (select y.*,rownum rn from
+        (select n.*
+        from notice n
+        order by n.notice_time desc) y) x
+        where x.rn between 1 and 8
+    </select>
+
+    <resultMap id="monthMapper" type="com.ssm.pojo.Month">
+        <result column="ctime" property="ctime"/>
+        <result column="cmonth" property="cmonth"/>
+    </resultMap>
+
+    <select id="getCustomerMonth" resultMap="monthMapper">
+        select * from
+        (select c.*,rownum rn from
+        (select  substr(to_char(t.customer_time,'yyyy-MM'),6,2) as ctime,count(*) as cmonth
+        from CUSTOMER t where t.customer_status='0'
+        group by to_char(t.customer_time,'yyyy-MM')
+        order by to_char(t.customer_time,'yyyy-MM') desc) c order by c.ctime ) cc
+        where cc.rn between 1 and 12
+    </select>
+
+    <resultMap id="monthInfo" type="com.ssm.pojo.MonthInfo">
+        <result column="nodones" property="nodones"/>
+        <result column="nodoor" property="nodoor"/>
+        <result column="hasdoor" property="hasdoor"/>
+        <result column="mnodone" property="mnodone"/>
+        <result column="mhasdone" property="mhasdone"/>
+    </resultMap>
+
+    <select id="getMonthInfo" resultMap="monthInfo">
+        select a.nodones,b.nodoor,c.hasdoor,d.mnodone,e.mhasdone from
+        (
+        select sum(tt.nodone) as nodones from
+        (select count(*) as nodone from customer t
+        where t.customer_status!='0'
+        group by to_char(t.customer_time,'yyyy-MM')) tt
+        ) a,
+        (
+        select count(*) as nodoor from customer t
+        where to_char(t.customer_time,'yyyy-MM')=to_char(sysdate,'yyyy-MM')
+        and t.customer_status='1'
+        group by to_char(t.customer_time,'yyyy-MM')
+        ) b,
+        (
+        select count(*) as hasdoor from customer t
+        where to_char(t.customer_time,'yyyy-MM')=to_char(sysdate,'yyyy-MM')
+        and t.customer_status='2'
+        group by to_char(t.customer_time,'yyyy-MM')
+        ) c,
+        (
+        select count(*) as mnodone from customer t
+        where to_char(t.customer_time,'yyyy-MM')=to_char(sysdate,'yyyy-MM')
+        and t.customer_status!='0'
+        group by to_char(t.customer_time,'yyyy-MM')
+        ) d,
+        (
+        select count(*) as mhasdone from customer t
+        where to_char(t.customer_time,'yyyy-MM')=to_char(sysdate,'yyyy-MM')
+        and t.customer_status='0'
+        group by to_char(t.customer_time,'yyyy-MM')
+        ) e
+    </select>
+
+    <resultMap id="customerMapper" type="com.ssm.pojo.Customer">
+        <id column="customer_id" property="customer_id"/>
+        <result column="customer_name" property="customer_name"/>
+        <result column="customer_phone" property="customer_phone"/>
+        <result column="customer_school" property="customer_school"/>
+        <result column="customer_major" property="customer_major"/>
+        <result column="customer_status" property="customer_status"/>
+    </resultMap>
+
+    <select id="getCustomerDone" resultMap="customerMapper">
+        select * from CUSTOMER t
+        where t.customer_status != '0'
+    </select>
+
+    <select id="getCustomerReady" resultMap="customerMapper">
+        select * from CUSTOMER t
+        where  to_char(t.customer_time,'yyyy-MM')>'2018-06'
+        and t.customer_status='0' order by t.customer_id
+    </select>
+
+</mapper>
